@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vui Chơi Có Thưởng</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: #000;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 40px;
+            color: yellow;
+            text-shadow: 2px 2px 10px red;
+            margin-bottom: 20px;
+            z-index: 10;
+        }
+
+        .gift-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .gift-box {
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .gift-box:hover {
+            transform: scale(1.1);
+        }
+
+        .selected {
+            position: absolute;
+            animation: zoomIn 1s forwards;
+        }
+
+        @keyframes zoomIn {
+            0% {
+                transform: scale(1);
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                transform: translate(-50%, -40%) scale(3);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .message {
+            display: none;
+            font-size: 28px;
+            color: #ff0000;
+            margin-top: 20px;
+            animation: fadeIn 1s ease forwards, glow 1.5s infinite alternate;
+            z-index: 10;
+            text-shadow: 0 0 5px #ff0000, 0 0 15px #ff3300, 0 0 25px #ff0000;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px #ff0000, 0 0 15px #ff3300, 0 0 25px #ff0000;
+            }
+            100% {
+                text-shadow: 0 0 10px #ff0000, 0 0 20px #ff3300, 0 0 30px #ff0000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎉 Vui Chơi Có Thưởng 🎁</h1>
+
+    <div class="gift-container" id="giftContainer">
+        <img src="img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(0)">
+        <img src="img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(1)">
+        <img src="img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(2)">
+        <img src="img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(3)">
+        <img src="img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(4)">
+        <img src="img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(5)">
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <script>
+        const messages = [
+            "🎁 Phần thưởng 1: Một cốc trà sữa cho chị bé!",
+            "🎁 Phần thưởng 2: Chị sẽ chúc em ngủ ngon bằng giọng nói ngọt ngào!",
+            "🎁 Phần thưởng 3: Một chai nước Revise cho em!",
+            "🎁 Phần thưởng 4: Một bó kẹo mút dành cho chị bé!",
+            "🎁 Phần thưởng 5: Chị sẽ mua một cốc trà sữa cho em!",
+            "🎁 Phần thưởng 6: X2 gói bim bim cho em!"
+        ];
+
+        function revealGift(index) {
+            const giftContainer = document.getElementById('giftContainer');
+            const giftBoxes = document.querySelectorAll('.gift-box');
+            const messageDiv = document.getElementById('message');
+
+            // Ẩn tất cả các hộp quà
+            giftBoxes.forEach((box, i) => {
+                if (i !== index) box.classList.add('hidden');
+            });
+
+            // Làm hộp quà được chọn to ra ở giữa
+            const selectedGift = giftBoxes[index];
+            selectedGift.classList.add('selected');
+
+            // Chờ hộp quà to ra rồi ẩn đi và hiện thông điệp
+            setTimeout(() => {
+                selectedGift.classList.add('hidden');
+                messageDiv.innerHTML = messages[index];
+                messageDiv.style.display = 'block';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
