@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Trái Tim Huyền Bí</title>
+    <title>Vui Chơi Có Thưởng</title>
     <style>
         * {
             margin: 0;
@@ -13,43 +13,74 @@
         }
 
         body {
-            background: #000;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
             flex-direction: column;
-        }
-
-        canvas {
-            display: block;
-        }
-
-        #nextButton {
-            margin-top: -400px;
-            padding: 10px 20px;
-            font-size: 18px;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: pink;
             color: white;
-            background: red;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        #nextButton:hover {
-            background: darkred;
-        }
-
-        #textDisplay {
-            margin-top: 20px;
-            color: white;
-            font-size: 20px;
+            font-family: Arial, sans-serif;
             text-align: center;
-            max-width: 80%;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 40px;
+            color: yellow;
+            text-shadow: 2px 2px 10px red;
+            margin-bottom: 20px;
+            z-index: 10;
+        }
+
+        .gift-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .gift-box {
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .gift-box:hover {
+            transform: scale(1.1);
+        }
+
+        .selected {
+            position: absolute;
+            animation: zoomIn 1s forwards;
+        }
+
+        @keyframes zoomIn {
+            0% {
+                transform: scale(1);
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                transform: translate(-50%, -40%) scale(3);
+            }
+        }
+
+        .hidden {
             display: none;
+        }
+
+        .message {
+            display: none;
+            font-size: 24px;
+            color: #ffcc00;
+            margin-top: 20px;
             animation: fadeIn 1s ease forwards;
+            z-index: 10;
         }
 
         @keyframes fadeIn {
@@ -59,97 +90,50 @@
     </style>
 </head>
 <body>
-<canvas id="heartCanvas"></canvas>
-<button id="nextButton">Tiếp theo</button>
-<div id="textDisplay"></div>
+    <h1>🎉 Vui Chơi Có Thưởng 🎁</h1>
 
-<script>
-    const canvas = document.getElementById('heartCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    <div class="gift-container" id="giftContainer">
+        <img src="/img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(0)">
+        <img src="/img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(1)">
+        <img src="/img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(2)">
+        <img src="/img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(3)">
+        <img src="/img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(4)">
+        <img src="/img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(5)">
+    </div>
 
-    const particles = [];
+    <div class="message" id="message"></div>
 
-    function createHeartShape(t) {
-        const x = 16 * Math.pow(Math.sin(t), 3);
-        const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
-        return { x: x, y: y };
-    }
+    <script>
+        const messages = [
+            "🎁 Phần thưởng 1: Một cốc trà sữa cho chị bé!",
+            "🎁 Phần thưởng 2: Chị sẽ chúc em ngủ ngon bằng giọng nói ngọt ngào!",
+            "🎁 Phần thưởng 3: Một chai nước Revise cho em!",
+            "🎁 Phần thưởng 4: Một bó kẹo mút dành cho chị bé!",
+            "🎁 Phần thưởng 5: Chị sẽ mua một cốc trà sữa cho em!",
+            "🎁 Phần thưởng 6: X2 gói bim bim cho em!"
+        ];
 
-    function Particle(x, y, size, speedX, speedY) {
-        this.x = x;
-        this.y = y;
-        this.size = size;
-        this.speedX = speedX;
-        this.speedY = speedY;
-        this.alpha = 1;
-    }
+        function revealGift(index) {
+            const giftContainer = document.getElementById('giftContainer');
+            const giftBoxes = document.querySelectorAll('.gift-box');
+            const messageDiv = document.getElementById('message');
 
-    Particle.prototype.update = function () {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        this.alpha -= 0.01;
-    };
+            // Ẩn tất cả các hộp quà
+            giftBoxes.forEach((box, i) => {
+                if (i !== index) box.classList.add('hidden');
+            });
 
-    Particle.prototype.draw = function () {
-        ctx.globalAlpha = this.alpha;
-        ctx.fillStyle = `rgba(255, 0, 0, ${this.alpha})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1;
-    };
+            // Làm hộp quà được chọn to ra ở giữa
+            const selectedGift = giftBoxes[index];
+            selectedGift.classList.add('selected');
 
-    function createParticles() {
-        for (let i = 0; i < 100; i++) {
-            const t = Math.random() * Math.PI * 2;
-            const heartPoint = createHeartShape(t);
-            const x = heartPoint.x * 15 + canvas.width / 2;
-            const y = heartPoint.y * 15 + canvas.height / 2;
-            const speedX = (Math.random() - 0.5) * 2;
-            const speedY = (Math.random() - 0.5) * 2;
-            particles.push(new Particle(x, y, Math.random() * 3 + 1, speedX, speedY));
+            // Chờ hộp quà to ra rồi ẩn đi và hiện thông điệp
+            setTimeout(() => {
+                selectedGift.classList.add('hidden');
+                messageDiv.innerHTML = messages[index];
+                messageDiv.style.display = 'block';
+            }, 1000);
         }
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Hiệu ứng lan tỏa
-        ctx.strokeStyle = 'rgba(255, 0, 0, 0.3)';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        for (let i = 0; i < Math.PI * 2; i += 0.01) {
-            const p = createHeartShape(i);
-            const x = p.x * 15 + canvas.width / 2;
-            const y = p.y * 15 + canvas.height / 2;
-            ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-        ctx.stroke();
-
-        // Vẽ các hạt nhỏ
-        particles.forEach((particle, index) => {
-            particle.update();
-            particle.draw();
-            if (particle.alpha <= 0) particles.splice(index, 1);
-        });
-
-        createParticles();
-        requestAnimationFrame(animate);
-    }
-
-    animate();
-
-    // Nút "Tiếp theo" để hiện đoạn văn bản
-    const nextButton = document.getElementById('nextButton');
-    const textDisplay = document.getElementById('textDisplay');
-
-    nextButton.addEventListener('click', () => {
-        textDisplay.style.display = 'block';
-        textDisplay.innerHTML ="💖 🌷 <b>Gửi chị bé Thảo nè,</b><br><br>Em muốn gửi đến chị những lời chúc chân thành nhất. <br><br>Chúc chị Thảo luôn rạng rỡ như những đóa hoa, mạnh mẽ như ánh nắng ban mai và hạnh phúc ngập tràn mỗi ngày.<br><br>Cảm ơn chị vì đã mát em , trò chuyện với em cho em 1 thứ cảm giác rất khác mà từ trước giờ em chứ có từ ai cả.<br><br>Hy vọng chúng ta sẽ phát triển được mối quan hệ này nhé chị. Hãy luôn giữ nụ cười tươi trên môi mãi xinh đẹp, vì chị xứng đáng với tất cả những điều tốt đẹp nhất! 💖<br><br><b>Nhóc của Thảo 🌼</b> 💬";
-    });
-</script>
+    </script>
 </body>
 </html>
