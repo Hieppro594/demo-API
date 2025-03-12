@@ -18,7 +18,7 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background: pink;
+            background: #000;
             color: white;
             font-family: Arial, sans-serif;
             text-align: center;
@@ -42,17 +42,48 @@
             z-index: 5;
         }
 
+        /* Thiết kế hộp quà */
         .gift-box {
-            width: 150px;
-            height: 150px;
+            width: 120px;
+            height: 120px;
+            background: #1e90ff;
+            border: 5px solid #ff0000;
+            position: relative;
             cursor: pointer;
             transition: transform 0.2s;
         }
 
+        .gift-box::before,
+        .gift-box::after {
+            content: '';
+            position: absolute;
+            background: #ff0000;
+        }
+
+        /* Nơ dọc */
+        .gift-box::before {
+            width: 20px;
+            height: 100%;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+        }
+
+        /* Nơ ngang */
+        .gift-box::after {
+            width: 100%;
+            height: 20px;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+
+        /* Hiệu ứng khi di chuột */
         .gift-box:hover {
             transform: scale(1.1);
         }
 
+        /* Animation khi click vào hộp quà */
         .selected {
             position: absolute;
             animation: zoomIn 1s forwards;
@@ -70,22 +101,34 @@
             }
         }
 
+        /* Ẩn hộp quà */
         .hidden {
             display: none;
         }
 
+        /* Phần thông báo giải thưởng */
         .message {
             display: none;
-            font-size: 24px;
-            color: #ffcc00;
+            font-size: 28px;
+            color: #ff0000;
             margin-top: 20px;
-            animation: fadeIn 1s ease forwards;
+            animation: fadeIn 1s ease forwards, glow 1.5s infinite alternate;
             z-index: 10;
+            text-shadow: 0 0 5px #ff0000, 0 0 15px #ff3300, 0 0 25px #ff0000;
         }
 
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px #ff0000, 0 0 15px #ff3300, 0 0 25px #ff0000;
+            }
+            100% {
+                text-shadow: 0 0 10px #ff0000, 0 0 20px #ff3300, 0 0 30px #ff0000;
+            }
         }
     </style>
 </head>
@@ -93,12 +136,12 @@
     <h1>🎉 Vui Chơi Có Thưởng 🎁</h1>
 
     <div class="gift-container" id="giftContainer">
-        <img src="/img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(0)">
-        <img src="/img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(1)">
-        <img src="/img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(2)">
-        <img src="/img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(3)">
-        <img src="/img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(4)">
-        <img src="/img/hop-3-800x800.jpg" alt="Hộp Quà" class="gift-box" onclick="revealGift(5)">
+        <div class="gift-box" onclick="revealGift(0)"></div>
+        <div class="gift-box" onclick="revealGift(1)"></div>
+        <div class="gift-box" onclick="revealGift(2)"></div>
+        <div class="gift-box" onclick="revealGift(3)"></div>
+        <div class="gift-box" onclick="revealGift(4)"></div>
+        <div class="gift-box" onclick="revealGift(5)"></div>
     </div>
 
     <div class="message" id="message"></div>
